@@ -1,0 +1,2 @@
+# TyMo
+Typing Mock exam
