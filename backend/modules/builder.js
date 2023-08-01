@@ -1,20 +1,12 @@
-import Koa from "koa";
-import Router from "koa-router";
+import express from "express"
 
 class Server {
   constructor() {
-    this.app = new Koa();
-    this.router = new Router();
+    this.app = express();
   }
 
   get(route, callback) {
-    this.router.get(route, callback);
-  }
-
-  using() {
-    this.app.use(this.router.routes());
-    this.app.use(this.router.allowedMethods());
-
+    this.app.get(route, callback);
   }
 
   run(port) {

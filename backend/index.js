@@ -6,8 +6,8 @@ import nodupls from "./modules/nodupls.js";
 const server = new Server();
 const checkers = new Checkers;
 
-server.get("/:exams/:years", ctx => {
-  const { exams, years } = ctx.params;
+server.get("/:exams/:years", (req, res) => {
+  const { exams, years } = req.params;
 
   const examsSplit = nodupls(exams.split("@"));
   const yearsSplit = nodupls(years.split("@"));
@@ -18,18 +18,16 @@ server.get("/:exams/:years", ctx => {
   if (e && y) {
     const {exam, year, num, content} = giveme(examsSplit, yearsSplit);
     console.log(`${year}년 ${exam}시험 ${num}번 문제 요청 들어옴..`);
-    ctx.body = {exam, year, num, content}
+    res.json({exam, year, num, content});
   } else {  
-    ctx.body = {
+    res.json({
       exam: "",
       year: "",
       num: "",
       content: ""
-    };
+    });
   }
 })
 
-server.using();
-
-export default server.app;
-// server.run(8080);
+// export default server.app;
+server.run(8080);
