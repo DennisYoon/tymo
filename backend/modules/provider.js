@@ -15,7 +15,7 @@ function giveme(exams, years) {
   const exam = exams[r(0, exams.length - 1)];
   const year = years[r(0, years.length - 1)];
 
-  const fileContent = fs.readFileSync(`../texts/${exam}/${year}.json`).toString();
+  const fileContent = fs.readFileSync(`./texts/${exam}/${year}.json`).toString();
   const jsonContent = JSON.parse(fileContent);
   const oneq = jsonContent[r(0, jsonContent.length - 1)];
 
