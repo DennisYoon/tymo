@@ -6,6 +6,10 @@ const nodupls = require("./modules/nodupls.js");
 const server = new Server();
 const checkers = new Checkers;
 
+server.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 server.get("/:exams/:years", (req, res) => {
   const { exams, years } = req.params;
 
