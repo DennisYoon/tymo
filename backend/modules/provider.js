@@ -1,10 +1,10 @@
-const fs = require("fs");
+const fetch = require("node-fetch");
 
 function r(from, to) {
   return Math.floor(Math.random() * (to - from + 1)) + from;
 }
 
-function giveme(exams, years) {
+async function giveme(exams, years) {
   for (let str of ["june", "sept"]) {
     const index = exams.indexOf(str);
     if (index !== -1) {
@@ -15,8 +15,8 @@ function giveme(exams, years) {
   const exam = exams[r(0, exams.length - 1)];
   const year = years[r(0, years.length - 1)];
 
-  const fileContent = fs.readFileSync(`./texts/${exam}/${year}.json`).toString();
-  const jsonContent = JSON.parse(fileContent);
+  const fileContent = await fetch(`https://dennisyun.github.io/tymo/texts/${exam}/${year}.json`);
+  const jsonContent = await fileContent.json();
   const oneq = jsonContent[r(0, jsonContent.length - 1)];
 
   const num = oneq.num;
