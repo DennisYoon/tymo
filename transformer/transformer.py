@@ -102,12 +102,14 @@ def problem(document, num):
 
 def main():
   # exams = pdfs("../exams/mock/june/*")
-  exams = pdfs("../exams/csat/*")
+  # exams = pdfs("../exams/csat/*")
+  exams = pdfs("../exams/mock/sept/*")
 
   for exam in exams:
     exam_name = file_name(exam)
-    # json = open(f"../texts/mock/june/{exam_name}.json", "w", encoding="utf-8");
-    json = open(f"../texts/csat/{exam_name}.json", "w", encoding="utf-8");
+    # json = open(f"../texts/mock/june/{exam_name}.json", "w", encoding="utf-8")
+    # json = open(f"../texts/csat/{exam_name}.json", "w", encoding="utf-8")
+    json = open(f"../texts/mock/sept/{exam_name}.json", "w", encoding="utf-8")
 
     original_doc = fitz.open(exam)
     document = allpages(original_doc)
