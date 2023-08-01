@@ -37,4 +37,4 @@ server.get("/:exams/:years", (req, res) => {
 })
 
 server.run(8080);
-module.exports = app;
+module.exports = server.app;
