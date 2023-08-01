@@ -15,18 +15,21 @@ server.get("/:exams/:years", (req, res) => {
   const e = checkers.exams(examsSplit);
   const y = checkers.years(yearsSplit);
 
-  if (e && y) {
-    const {exam, year, num, content} = giveme(examsSplit, yearsSplit);
-    console.log(`${year}년 ${exam}시험 ${num}번 문제 요청 들어옴..`);
-    res.json({exam, year, num, content});
-  } else {  
-    res.json({
-      exam: "",
-      year: "",
-      num: "",
-      content: ""
-    });
-  }
+  res.json({hello:"world"});
+
+  
+  // if (e && y) {
+  //   const {exam, year, num, content} = giveme(examsSplit, yearsSplit);
+  //   console.log(`${year}년 ${exam}시험 ${num}번 문제 요청 들어옴..`);
+  //   res.json({exam, year, num, content});
+  // } else {  
+  //   res.json({
+  //     exam: "",
+  //     year: "",
+  //     num: "",
+  //     content: ""
+  //   });
+  // }
 })
 
 server.run(8080);
