@@ -11,10 +11,13 @@ class Server {
     this.router.get(route, callback);
   }
 
-  run(port) {
+  using() {
     this.app.use(this.router.routes());
     this.app.use(this.router.allowedMethods());
 
+  }
+
+  run(port) {
     this.app.listen(port, () => {
       console.log("The server is running on port", port);
     });

@@ -1,3 +1,7 @@
-const years = ["2021"]
-const year = years[Math.floor(Math.random() * years.length)];
-console.log(year);
+function r(from, to) {
+  return Math.floor(Math.random() * (to - from + 1)) + from;
+}
+
+for (let i = 0; i < 10; i++) {
+  console.log(r(0, 4));
+}

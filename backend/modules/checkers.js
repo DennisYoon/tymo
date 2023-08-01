@@ -1,24 +1,13 @@
 class Checkers {
-  #dupls(array) {
-    const findDupls = array.filter((item, index) => {
-      return array.indexOf((item) !== index)
-    });
-
-    if (findDupls.length === 0) {
-      return false;
-    }
-    return true;
-  }
-
   exams(list) {
     const noException = list.every(value => {
-      if (value in ["csat", "june", "sept"]) {
+      if (["csat", "june", "sept"].some(ele => ele === value)) {
         return true;
       }
       return false;
     });
 
-    return noException && !this.#dupls(list);
+    return noException;
   }
 
   years(list) {
@@ -30,7 +19,7 @@ class Checkers {
       return false;
     });
 
-    return noException && !this.#dupls(list);
+    return noException;
   }
 }
 
