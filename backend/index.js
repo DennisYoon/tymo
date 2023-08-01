@@ -1,11 +1,33 @@
-import { csat } from "./routes/csat.js";
-import { mock } from "./routes/mock.js";
-import express from "express"
+import Server from "./modules/builder.js";
+import Checkers from "./modules/checkers.js";
 
-let app = express();
+const server = new Server();
+const checkers = new Checkers;
 
-app.get("/csat", csat);
-app.get("/mock/:years", mock);
-// years format: 201420232024 같은 식임
+server.get("/:exams/:years", ctx => {
+  const { exams, years } = ctx.params;
 
-app.listen("8080");
+  const examsSplit = exams.split("@");
+  const yearsSplit = years.split("@");
+
+  let body;
+  if (checkers.exams(examsSplit) && checkers.years(yearsSplit)) {
+    body = {
+      exam   : "None",
+      year   : "None",
+      num    : "None",
+      content: "None"
+    };
+  } else {
+    body = {
+      exam   : "None",
+      year   : "None",
+      num    : "None",
+      content: "None"
+    };
+  }
+
+  ctx.body = body;
+})
+
+server.run(8080);
