@@ -1,7 +1,7 @@
-import Server from "./modules/builder.js";
-import Checkers from "./modules/checkers.js";
-import giveme from "./modules/provider.js";
-import nodupls from "./modules/nodupls.js";
+const Server = require("./modules/builder.js");
+const Checkers = require("./modules/checkers.js");
+const giveme = require("./modules/provider.js");
+const nodupls = require("./modules/nodupls.js");
 
 const server = new Server();
 const checkers = new Checkers;
@@ -29,5 +29,5 @@ server.get("/:exams/:years", (req, res) => {
   }
 })
 
-// export default server.app;
 server.run(8080);
+module.exports = app;

@@ -3,4 +3,4 @@ function nodupls(array) {
   return unique;
 }
 
-export default nodupls;
+module.exports = nodupls;

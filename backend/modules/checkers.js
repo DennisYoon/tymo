@@ -23,4 +23,4 @@ class Checkers {
   }
 }
 
-export default Checkers;
+module.exports = Checkers;

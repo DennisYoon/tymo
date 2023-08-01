@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 
 function r(from, to) {
   return Math.floor(Math.random() * (to - from + 1)) + from;
@@ -25,4 +25,4 @@ function giveme(exams, years) {
   return { exam, year, num, content };
 }
 
-export default giveme;
+module.exports = giveme;

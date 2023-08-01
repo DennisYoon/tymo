@@ -1,5 +1,4 @@
-import express from "express"
-
+const express = require("express");
 class Server {
   constructor() {
     this.app = express();
@@ -16,4 +15,4 @@ class Server {
   }
 }
 
-export default Server;
+module.exports = Server;
