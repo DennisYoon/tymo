@@ -31,5 +31,5 @@ server.get("/:exams/:years", ctx => {
 
 server.using();
 
-module.exports = server.app;
+export default server.app;
 // server.run(8080);
