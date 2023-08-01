@@ -1,6 +1,6 @@
 const Server = require("./modules/builder.js");
 const Checkers = require("./modules/checkers.js");
-const giveme = require("./modules/provider.js");
+const giveme = require("./modules/provider.js").giveme;
 const nodupls = require("./modules/nodupls.js");
 
 const server = new Server();
@@ -10,7 +10,7 @@ server.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-server.get("/:exams/:years", (req, res) => {
+server.get("/:exams/:years", async (req, res) => {
   const { exams, years } = req.params;
 
   const examsSplit = nodupls(exams.split("@"));
@@ -20,7 +20,7 @@ server.get("/:exams/:years", (req, res) => {
   const y = checkers.years(yearsSplit);
   
   if (e && y) {
-    const {exam, year, num, content} = giveme(examsSplit, yearsSplit);
+    const {exam, year, num, content} = await giveme(examsSplit, yearsSplit);
     console.log(`${year}년 ${exam}시험 ${num}번 문제 요청 들어옴..`);
     res.json({exam, year, num, content});
   } else {  

@@ -25,4 +25,4 @@ async function giveme(exams, years) {
   return { exam, year, num, content };
 }
 
-module.exports = giveme;
+module.exports.giveme = giveme;
