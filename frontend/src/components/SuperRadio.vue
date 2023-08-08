@@ -14,6 +14,10 @@
     <div ref="itemParentR">
       <div
         class="item"
+        :class="[{
+          blackify: !~isSelected(index + 2),
+          whitify: ~isSelected(index + 2)
+        }]"
         :style="itemStyle(index + 2)"
         v-for="(item, index) in props.contents"
         :key="item"
@@ -71,7 +75,7 @@
       ) + locAtorder * 30 + "px",
     };
     const additional = {
-      backgroundColor: ~isSelected(locAtWidth) ? "lightblue !important" : "rgb(243, 243, 243)",
+      backgroundColor: ~isSelected(locAtWidth) ? "white" : "rgb(39, 40, 41)",
       zIndex: (whoOnTop.value === locAtWidth) ? 2 : 1
     };
 
@@ -86,8 +90,8 @@
 
   const bariHeight = computed(() => {
     return {
-      height: edgeHeight.value * 0.8 + "px",
-      top: edgeHeight.value * 0.1 + "px"
+      height: edgeHeight.value + "px",
+      // top: edgeHeight.value * 0.1 + "px"
     }
   });
 
@@ -171,6 +175,7 @@
     display: inline-block;
     user-select: none;
     position: relative;
+    color: white;
 
     #title {
       display: inline-block;
@@ -185,7 +190,7 @@
       transition: left .5s;
       transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
       position: absolute;
-      border-left: 1px solid black;
+      border-left: 1px solid white;
       z-index: 3;
     }
 
@@ -200,12 +205,24 @@
       padding-bottom: 20px;
       padding-left: 30px;
       padding-right: 30px;
-
-      &:hover {
-        background-color: lightgray !important;
-        cursor: grab;
-      }
     }
 
+    .blackify {
+      color: white !important;
+    }
+
+    .whitify {
+      color: rgb(24, 24, 25) !important;
+    }
+
+    .blackify:hover {
+      background-color: rgb(31, 32, 33) !important;
+      cursor: grab;
+    }
+
+    .whitify:hover {
+      background-color: rgb(227, 227, 227) !important;
+      cursor: grab;
+    }
   }
 </style>
