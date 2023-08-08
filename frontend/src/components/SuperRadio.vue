@@ -215,14 +215,16 @@
       color: rgb(24, 24, 25) !important;
     }
 
-    .blackify:hover {
-      background-color: rgb(31, 32, 33) !important;
-      cursor: grab;
-    }
+    @media (hover: hover) and (pointer: fine) {
+      .blackify:hover {
+        background-color: rgb(31, 32, 33) !important;
+        cursor: grab;
+      }
 
-    .whitify:hover {
-      background-color: rgb(227, 227, 227) !important;
-      cursor: grab;
-    }
+      .whitify:hover {
+        background-color: rgb(227, 227, 227) !important;
+        cursor: grab;
+      }
+    } 
   }
 </style>
