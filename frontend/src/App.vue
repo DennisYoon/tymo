@@ -2,23 +2,18 @@
   <SuperRadio
     id="test"
     title="시험"
-    :contents="['대학수학능력시험', '6월 모의평가', '9월 모의평가']"
-    @receiver="receiver"
+    :contents="srr.items"
+
+    @receiver="srr.receiver"
   />
 </template>
 
 <script lang="ts" setup>
-  import { ref } from "vue";
-  import SuperRadio from "./components/SuperRadio.vue";
+  import SuperRadio from "./components/SuperRadio/SuperRadio.vue";
+  import SuperRadioReceiver from "./components/SuperRadio/Receiver";
 
-  const selected = ref(new Array<string>());
-  function receiver(value: string[]) {
-    selected.value = value;
-  }
-
-  // watch(selected, (newValue) => {
-  //   console.log(newValue);
-  // });
+  const srr = new SuperRadioReceiver(['대학수학능력시험', '6월 모의평가', '9월 모의평가']);
+  srr.watchItems();
 </script>
 
 <style lang="scss">

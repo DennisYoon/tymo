@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
   import { ref, computed,  onMounted, StyleValue, watch } from "vue";
-  import { sum, moveElement } from "../assets/functions";
+  import { sum, moveElement } from "../_functions";
 
   interface Props {
     id: string;
@@ -82,7 +82,7 @@
    /* properties & emits zone */
   const props = defineProps<Props>();
   const emit = defineEmits<{
-    receiver: [value: string[]]
+    receiver: [value: Array<string>]
 }>()
 
   /* references zone */
@@ -156,7 +156,6 @@
 
   /* watch zone */
   watch(order, newOrder => {
-    console.log("watching");
     const count = newOrder.slice(1, indexOfBaricadeAtOrder()).length;
     if (count === props.contents.length) {
       switcher.value = false;
@@ -164,6 +163,13 @@
     if (count === 0) {
       switcher.value = true;
     }
+
+    emit(
+      "receiver",
+      order.value
+        .slice(1, indexOfBaricadeAtOrder())
+        .map(v => props.contents[v - 2])
+    );
   }, { deep:true });
 
   /* functions zone */
@@ -209,13 +215,6 @@
       }
       moveElement(order.value, indexAtorder, i);
     }
-
-    emit(
-      "receiver",
-      order.value
-        .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.contents[v - 2])
-    );
   }
 
   function selectAll() {
