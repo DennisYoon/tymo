@@ -1,37 +1,74 @@
 <template>
-  <div id="edge" :style="edgeWidthC">
+  <div
+    id="edge"
+    ref="edgeR"
+    :style="{
+      height: basicHeight ? basicHeight + 'px' : 'auto',
+      width: basicWidth ? basicWidth + 'px' : 'auto'
+    }"
+  >
 
     <div id="title" ref="titleR">
-      {{ props.title }}
+      <div id="titleItem">
+        {{ props.title }}
+      </div>
     </div>
 
-    <div
-      id="barricade"
-      ref="barricadeR"
-      :style="[itemStyle(1), bariHeight]"
-    />
+    <div id="barricade" ref="barricadeR" :style="[absolutifyAndHeight, itemStyle(1)]" :class="{disableTransition: !transition}">
+      <div id="barricadeItem"  />
+    </div>
+    
 
-    <div ref="itemParentR">
+    <div id="itemParent" ref="itemParentR">
       <div
-        class="item"
-        :class="[{
-          blackify: !~isSelected(index + 2),
-          whitify: ~isSelected(index + 2)
-        }]"
-        :style="itemStyle(index + 2)"
+        id="itemPadding"
         v-for="(item, index) in props.contents"
         :key="item"
-        @click="select(index + 2)"
+        :style="[absolutifyAndHeight, itemStyle(index + 2)]"
+        :class="{disableTransition: !transition}"
       >
-        {{ item }}
-      </div>
-    </div> 
+        <div class="forFlex" :style="getBasicHeight">
+          <div
+            class="item"
+            :class="[{
+              blackify: !~isSelected(index + 2),  
+              whitify: ~isSelected(index + 2),
+              gapBigger: ~isSelected(index + 2)
+            }]"
+            :style="bgcOfItem(index + 2)"
+            @click="select(index + 2)"
+          >
+            <div class="itemText">
+              {{ item }}
+            </div>
+            <img class="x" :class="[{xBigger: ~isSelected(index + 2)}]" src="images/x.svg" alt="x.svg">
+          </div>
+        </div>
+        
+      </div> 
+    </div>
+      
+    <div id="allornot" ref="allornot" :style="[absolutifyAndHeight, {width: widths!.at(-1)! + 'px'}]">
+      <Transition name="slide-up">
+        <div v-if="switcher" id="allornotItem" @click="selectAll" :style="absolutifyAndHeight">
+          <div class="forFlex" :style="getBasicHeight">
+            모두 선택
+          </div>
+        </div>
+        <div v-else id="allornotItem" @click="selectAll" :style="absolutifyAndHeight">
+          <div class="forFlex" :style="getBasicHeight">
+            모두 해제
+          </div>
+        </div>
+      </Transition>
+      
+    </div>
 
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref, computed } from "vue";
+  import { ref, computed,  onMounted, StyleValue, watch } from "vue";
   import { sum, moveElement } from "../assets/functions";
 
   interface Props {
@@ -51,36 +88,46 @@
   /* references zone */
   const widths = ref<number[]>(new Array);
   const order = ref<number[]>(new Array);
-  const edgeWidth = ref("10000px");
-  const edgeHeight = ref(10000);
   const whoOnTop = ref(0);
+  const absolute = ref(false);
+  const basicHeight = ref(0);
+  const basicWidth = ref(0);
+  const transition = ref(false);
+  const switcher = ref(true);
 
   /* HTML Elements zone */
+  const edgeR = ref<Html>();
   const titleR = ref<Html>();
   const barricadeR = ref<Html>();
   const itemParentR = ref<Html>();
+  const allornot = ref<Html>();
 
   /* computed zone */
-  const edgeWidthC = computed(() => {
-    return { width: edgeWidth.value };
-  });
-
   const itemStyle = computed(() => (locAtWidth: number) => {
     const locAtorder = order.value.indexOf(locAtWidth);
+    const selectedCount = order.value.slice(1, indexOfBaricadeAtOrder()).length;
+    const beforeMeCount = order.value.slice(1, isSelected(locAtWidth)).length;
+    const additionalGap = (isSelected(locAtWidth) === -1 ? selectedCount : beforeMeCount) * 80;
+
     const essential = {
       left: sum(
         order.value
           .slice(0, locAtorder)
           .map(v => widths.value[v])
-      ) + locAtorder * 30 + "px",
+      ) + additionalGap + "px",
     };
     const additional = {
-      backgroundColor: ~isSelected(locAtWidth) ? "white" : "rgb(39, 40, 41)",
-      zIndex: (whoOnTop.value === locAtWidth) ? 2 : 1
+      zIndex: (whoOnTop.value === locAtWidth) ? 2 : 1,
     };
+    const forBari = {
+      opacity: (selectedCount === widths.value.length - 3) ? 0 : 1
+    }
 
     if (locAtWidth === 1) {
-      return essential;
+      return {
+        ...essential,
+        ...forBari
+      };
     }
     return {
       ...essential,
@@ -88,12 +135,36 @@
     };
   });
 
-  const bariHeight = computed(() => {
+  const bgcOfItem = computed(() => (locAtWidth: number) => {
     return {
-      height: edgeHeight.value + "px",
-      // top: edgeHeight.value * 0.1 + "px"
+      backgroundColor: ~isSelected(locAtWidth) ? "white" : "rgb(39, 40, 41)",
     }
+  })
+
+  const absolutifyAndHeight = computed(() => {
+    return {
+      position: absolute.value ? "absolute" : "static",
+      height: basicHeight.value ? basicHeight.value + "px" : "auto"
+    } as StyleValue;
   });
+
+  const getBasicHeight = computed(() => {
+    return {
+      height: basicHeight.value + 'px'
+    };
+  });
+
+  /* watch zone */
+  watch(order, newOrder => {
+    console.log("watching");
+    const count = newOrder.slice(1, indexOfBaricadeAtOrder()).length;
+    if (count === props.contents.length) {
+      switcher.value = false;
+    }
+    if (count === 0) {
+      switcher.value = true;
+    }
+  }, { deep:true });
 
   /* functions zone */
   function isSelected(locAtWidth: number) {
@@ -107,7 +178,7 @@
   }
 
   function getWidth(element: Html | undefined) {
-    return element!.offsetWidth;
+    return element!.clientWidth
   }
 
   /* eventListeners zone */
@@ -147,84 +218,175 @@
     );
   }
 
-  /* life cycles zone */
-  onMounted(() => {
+  function selectAll() {
+    switcher.value = !switcher.value;
+    if (switcher.value) {
+      moveElement(order.value, indexOfBaricadeAtOrder(), 1);
+    } else {
+      
+      moveElement(order.value, indexOfBaricadeAtOrder(), order.value.length - 2);
+    }
+  }
+
+  /* hooks zone */
+  function mount() {
     /* widths에 element 너비 삽입 */
     widths.value.push(getWidth(titleR.value));
     widths.value.push(getWidth(barricadeR.value));
     for (let itemR of itemParentR.value!.children) {
       widths.value.push(getWidth(itemR as Html));
     }
+    widths.value.push(getWidth(allornot.value));
 
     /* 요소들 배치 순서 지정 */    
     for (let i = 0; i < widths.value.length; i++) {
       order.value.push(i);
     }
 
-    /* 이 component의 너비 설정 */  
-    edgeWidth.value = (sum(widths.value) + 10) + widths.value.length * 30 + "px";
-    edgeHeight.value = titleR.value!.offsetHeight;
+    basicHeight.value = Math.max(edgeR.value!.offsetHeight, (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight);
+    basicWidth.value = edgeR.value!.offsetWidth + 80 * itemParentR.value!.children.length;
+
+    absolute.value = true;
+    setTimeout(() => {
+      transition.value = true;
+      moveElement(order.value, 2, 1);
+    });
+  }
+
+  /* life cycles zone */
+  onMounted(() => {
+    mount();
   });
+    
 </script>
 
 <style lang="scss">
+  .disableTransition {
+    transition: none !important;
+  }
+
+  .forFlex {
+    display: flex;
+    align-items: center;       
+  }
+
+  .slide-up-enter-from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .slide-up-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
   #edge {
     font-size: 50px;
+    font-family: 'SUIT';
     // border: 1px solid black;
     border-radius: 20px;
-    display: inline-block;
+    display: inline-flex;
     user-select: none;
     position: relative;
     color: white;
 
     #title {
-      display: inline-block;
-      padding-top: 20px;
-      padding-bottom: 20px;
-      padding-left: 50px;
-      padding-right: 20px;
+      display: flex;
+      align-items: center;
+      padding-left: 60px;
+      padding-right: 30px;
+      font-size: 60px;
+      // border: 1px solid black;
     }
 
     #barricade {
-      display: inline-block;
-      transition: left .5s;
+      display: flex;
+      transition: left .5s, opacity .5s;
       transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
-      position: absolute;
-      border-left: 1px solid white;
       z-index: 3;
-    }
-
-    .item {
-      display: inline-block;
-      border-radius: 1000px;
-      transition: background-color .2s, left .5s, width .5s;
-      transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
-      top: 0;
-      position: absolute;
-      padding-top: 20px;
-      padding-bottom: 20px;
       padding-left: 30px;
       padding-right: 30px;
+      // border: 1px solid black;
+      #barricadeItem {  
+        border-left: 3px solid white;
+      }
     }
 
-    .blackify {
-      color: white !important;
+    #itemParent {
+      display: flex;
+      #itemPadding {
+        // border: 1px solid black;
+        padding-left: 20px;
+        padding-right: 20px;
+        transition: left .5s;
+        .item {
+          display: flex;
+          border-radius: 1000px;
+          transition: background-color .2s, gap .5s;
+          transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+          top: 0;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          padding-left: 40px;
+          padding-right: 40px;
+          align-items: center;
+          gap: 0px;
+
+          .x {
+            height: 0px;
+            transition: height .35s;
+            transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+          }
+
+          .xBigger {
+            height: 60px;
+          }
+        }
+
+        .gapBigger {
+          gap: 20px;
+        }
+
+        .blackify {
+          color: white !important;
+        }
+
+        .whitify {
+          color: rgb(24, 24, 25) !important;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .blackify:hover {
+            background-color: rgb(31, 32, 33) !important;
+            cursor: grab;
+          }
+
+          .whitify:hover {
+            background-color: rgb(227, 227, 227) !important;
+            cursor: grab;
+          }
+        } 
+      }
     }
 
-    .whitify {
-      color: rgb(24, 24, 25) !important;
-    }
+    #allornot {
+      align-items: center;
+      padding-left: 20px;
+      padding-right: 20px;
+      right: 0;
+      color: rgb(178, 178, 178);
 
-    @media (hover: hover) and (pointer: fine) {
-      .blackify:hover {
-        background-color: rgb(31, 32, 33) !important;
-        cursor: grab;
+      #allornotItem {
+        border-radius: 15px;
+        transition: opacity .5s, transform .5s;
+        transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
       }
 
-      .whitify:hover {
-        background-color: rgb(227, 227, 227) !important;
-        cursor: grab;
+      @media (hover: hover) and (pointer: fine) {
+        #allornotItem:hover {
+          cursor: grab;
+        }
       }
-    } 
-  }
+    }
+  } 
 </style>

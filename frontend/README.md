@@ -1,1 +1,0 @@
-사용된 폰트: [에스코어드림](https://noonnu.cc/font_page/223)

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch } from "vue";
+  import { ref } from "vue";
   import SuperRadio from "./components/SuperRadio.vue";
 
   const selected = ref(new Array<string>());
@@ -16,9 +16,9 @@
     selected.value = value;
   }
 
-  watch(selected, (newValue) => {
-    console.log(newValue);
-  });
+  // watch(selected, (newValue) => {
+  //   console.log(newValue);
+  // });
 </script>
 
 <style lang="scss">
