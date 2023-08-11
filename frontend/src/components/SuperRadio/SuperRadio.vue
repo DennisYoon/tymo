@@ -4,7 +4,7 @@
     ref="edgeR"
     :style="{
       height: basicHeight ? basicHeight + 'px' : 'auto',
-      width: basicWidth ? basicWidth + 'px' : 'auto'
+      width: basicWidth ? basicWidth + 'px' : '10000px'
     }"
   >
 
@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
   import { ref, computed,  onMounted, StyleValue, watch } from "vue";
-  import { sum, moveElement } from "../_functions";
+  import { sum, moveElement } from "./_functions";
 
   interface Props {
     id: string;
@@ -163,13 +163,6 @@
     if (count === 0) {
       switcher.value = true;
     }
-
-    emit(
-      "receiver",
-      order.value
-        .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.contents[v - 2])
-    );
   }, { deep:true });
 
   /* functions zone */
@@ -215,6 +208,13 @@
       }
       moveElement(order.value, indexAtorder, i);
     }
+
+    emit(
+      "receiver",
+      order.value
+        .slice(1, indexOfBaricadeAtOrder())
+        .map(v => props.contents[v - 2])
+    );
   }
 
   function selectAll() {
@@ -225,6 +225,13 @@
       
       moveElement(order.value, indexOfBaricadeAtOrder(), order.value.length - 2);
     }
+
+    emit(
+      "receiver",
+      order.value
+        .slice(1, indexOfBaricadeAtOrder())
+        .map(v => props.contents[v - 2])
+    );
   }
 
   /* hooks zone */
@@ -243,7 +250,7 @@
     }
 
     basicHeight.value = Math.max(edgeR.value!.offsetHeight, (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight);
-    basicWidth.value = edgeR.value!.offsetWidth + 80 * itemParentR.value!.children.length;
+    basicWidth.value = sum(widths.value) + 80 * itemParentR.value!.children.length;
 
     absolute.value = true;
     setTimeout(() => {
