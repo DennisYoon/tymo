@@ -172,7 +172,9 @@
   const edgeStyle = computed(() => {
     return {
       height: basicHeight.value ? basicHeight.value + 'px' : 'auto',
-      width: basicWidth.value ? basicWidth.value + 'px' : '10000px'
+      width: (props.settings.styles.fullWidth === -1) ? 
+        (basicWidth.value ? basicWidth.value + 'px' : '10000px'):
+        props.settings.styles.fullWidth + "px"
     };
   });
 
@@ -292,6 +294,7 @@
     edge.setProperty("--titleVerticalMargin", props.settings.styles.titleVerticalMargin + "px");
     edge.setProperty("--contentHorizonMargin", props.settings.styles.contentHorizonMargin + "px");
     edge.setProperty("--contentVerticalMargin", props.settings.styles.contentVerticalMargin + "px");
+    edge.setProperty("--fullWidth", props.settings.styles.fullWidth + "px");
     edge.setProperty("--titleWidth", props.settings.styles.titleWidth + "px");
     edge.setProperty("--contentGap", props.settings.styles.contentGap + "px");
 
@@ -319,8 +322,11 @@
     absolute.value = true;
     setTimeout(() => {
       transition.value = true;
-      moveElement(order.value, 2, 1);
     });
+
+    setTimeout(() => {
+      moveElement(order.value, 2, 1);
+    }, props.settings.aniDuration);
   }
 
   /* life cycles zone */

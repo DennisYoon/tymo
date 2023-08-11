@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 interface Settings {
   title: string;
   contents: Array<string>;
+  aniDuration: number;
   styles: {
     titleSize: number;
     contentSize: number;
@@ -13,6 +14,7 @@ interface Settings {
     contentHorizonMargin: number;
     contentVerticalMargin: number;
 
+    fullWidth: number;
     titleWidth: number;
     contentGap: number;
   }
@@ -56,6 +58,11 @@ class SuperRadioReceiverBuilder {
     return this;
   }
 
+  setFullWidth(value: number) {
+    this.srr.SRsettings.styles.fullWidth = value;
+    return this;
+  }
+
   setTitleWidth(value: number) {
     this.srr.SRsettings.styles.titleWidth = value;
     return this;
@@ -63,6 +70,11 @@ class SuperRadioReceiverBuilder {
 
   setContentGap(value: number) {
     this.srr.SRsettings.styles.contentGap = value;
+    return this;
+  }
+
+  setAniDuration(value: number) {
+    this.srr.SRsettings.aniDuration = value;
     return this;
   }
 
@@ -76,6 +88,7 @@ class SuperRadioReceiver {
   public SRsettings: Settings = {
     title: "[undefined title]",
     contents: ["[undefined contents]"],
+    aniDuration: 0,
     styles: {
       titleSize: 60,
       contentSize: 50,
@@ -86,6 +99,7 @@ class SuperRadioReceiver {
       contentHorizonMargin: 80,
       contentVerticalMargin: 20,
 
+      fullWidth: -1,
       titleWidth: -1,
       contentGap: 20
     }
