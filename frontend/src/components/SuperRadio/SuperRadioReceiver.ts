@@ -4,6 +4,7 @@ interface Settings {
   title: string;
   contents: Array<string>;
   aniDuration: number;
+  mode: Mode;
   styles: {
     titleSize: number;
     contentSize: number;
@@ -18,6 +19,11 @@ interface Settings {
     titleWidth: number;
     contentGap: number;
   }
+}
+
+enum Mode {
+  Duplication,
+  Single
 }
 
 class SuperRadioReceiverBuilder {
@@ -78,6 +84,11 @@ class SuperRadioReceiverBuilder {
     return this;
   }
 
+  setMode(value: Mode) {
+    this.srr.SRsettings.mode = value;
+    return this;
+  }
+
   build() {
     return this.srr;
   }
@@ -89,6 +100,7 @@ class SuperRadioReceiver {
     title: "[undefined title]",
     contents: ["[undefined contents]"],
     aniDuration: 0,
+    mode: Mode.Duplication,
     styles: {
       titleSize: 60,
       contentSize: 50,
@@ -131,4 +143,4 @@ class SuperRadioReceiver {
   }
 }
 
-export { Settings, SuperRadioReceiverBuilder };
+export { Settings, SuperRadioReceiverBuilder, Mode };

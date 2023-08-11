@@ -51,6 +51,7 @@
       id="allornot"
       ref="allornot"
       :style="[absolutifyAndHeight, allornotWidth]"
+      v-show="props.settings.mode === Mode.Duplication"
     >
       <Transition name="slide-up">
         <div
@@ -83,7 +84,7 @@
 <script lang="ts" setup>
   import { ref, computed,  onMounted, StyleValue, watch } from "vue";
   import { sum, moveElement } from "./_functions";
-  import { Settings } from "./SuperRadioReceiver";
+  import { Settings, Mode } from "./SuperRadioReceiver";
 
   interface Props {
     id?: string;
@@ -235,6 +236,8 @@
     whoOnTop.value = locAtWidth;
 
     const indexAtorder = order.value.indexOf(locAtWidth);
+    const selectedLen = order.value.slice(1, indexOfBaricadeAtOrder()).length;
+    const modeIsSingle = props.settings.mode === Mode.Single;
 
     if (~isSelected(locAtWidth)) {
       /* 셀렉 된 걸 풀기 */
@@ -245,18 +248,35 @@
         }
       }
       moveElement(order.value, indexAtorder, i);
+
+      setTimeout(() => {
+        if (selectedLen - 1 === 0) {
+          moveElement(order.value, indexOfBaricadeAtOrder() + 1, indexOfBaricadeAtOrder());
+        }
+      }, 300);
       
     } else {
-      /* x버튼 만들기 */
-
-      /* 셀렉 안된 거 셀렉 */
-      let i: number;
-      for (i = 1; i < indexOfBaricadeAtOrder(); i++) {
-        if (locAtWidth < order.value[i]) {
-          break;
+      /* Mode.Single 일 때 선택된 거 삭제 */
+      if (modeIsSingle && selectedLen !== 0) {
+        let i: number;
+        for (i = order.value.length; i > indexOfBaricadeAtOrder(); i--) {
+          if (locAtWidth > order.value[i]) {
+            break;
+          }
         }
+        moveElement(order.value, indexOfBaricadeAtOrder() - 1, i);
       }
-      moveElement(order.value, indexAtorder, i);
+      
+      setTimeout(() => {
+        /* 셀렉 안된 거 셀렉 */
+        let i: number;
+        for (i = 1; i < indexOfBaricadeAtOrder(); i++) {
+          if (locAtWidth < order.value[i]) {
+            break;
+          }
+        }
+        moveElement(order.value, indexAtorder, i);
+      }, (modeIsSingle ? (selectedLen ? 1 : 0) : 0) * 300);    
     }
 
     emit(
@@ -271,8 +291,13 @@
     switcher.value = !switcher.value;
     if (switcher.value) {
       moveElement(order.value, indexOfBaricadeAtOrder(), 1);
+      setTimeout(() => {
+        const selectedLen = order.value.slice(1, indexOfBaricadeAtOrder()).length;
+        if (selectedLen === 0) {
+          moveElement(order.value, indexOfBaricadeAtOrder() + 1, indexOfBaricadeAtOrder());
+        }
+      }, 300);
     } else {
-      
       moveElement(order.value, indexOfBaricadeAtOrder(), order.value.length - 2);
     }
 

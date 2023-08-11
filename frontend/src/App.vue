@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
   import SuperRadio from "./components/SuperRadio/SuperRadio.vue";
-  import { SuperRadioReceiverBuilder } from "./components/SuperRadio/SuperRadioReceiver";
+  import { Mode, SuperRadioReceiverBuilder } from "./components/SuperRadio/SuperRadioReceiver";
 
   const exam = new SuperRadioReceiverBuilder()
     .setTitle("시험")
@@ -42,6 +42,7 @@
     .setFullWidth(1800)
     .setContentGap(10)
     .setAniDuration(500)
+    .setMode(Mode.Single)
     .build();
 </script>
 
