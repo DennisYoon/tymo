@@ -1,5 +1,5 @@
 <template>
-  <div id="edge" ref="edgeR" :style="edgeStyle">
+  <div class="edge" ref="edgeR" :style="edgeStyle" :id="props.id">
 
     <div id="title" ref="titleR">
       <div id="titleItem">
@@ -86,7 +86,7 @@
   import { Settings } from "./SuperRadioReceiver";
 
   interface Props {
-    id: string;
+    id?: string;
     settings: Settings;
   }
   type Html = HTMLElement;
@@ -120,7 +120,9 @@
     const locAtorder = order.value.indexOf(locAtWidth);
     const selectedCount = order.value.slice(1, indexOfBaricadeAtOrder()).length;
     const beforeMeCount = order.value.slice(1, isSelected(locAtWidth)).length;
-    const additionalGap = (isSelected(locAtWidth) === -1 ? selectedCount : beforeMeCount) * 80;
+    const additionalGap = (
+      isSelected(locAtWidth) === -1 ? selectedCount : beforeMeCount
+    ) * props.settings.styles.contentSize;
 
     const essential = {
       left: sum(
@@ -311,7 +313,7 @@
       edgeR.value!.offsetHeight,
       (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight
     );
-    basicWidth.value = sum(widths.value) + 80 * itemParentR.value!.children.length;
+    basicWidth.value = sum(widths.value) + props.settings.styles.contentSize * itemParentR.value!.children.length;
 
     /* okay 진행시켜 */
     absolute.value = true;
@@ -348,7 +350,7 @@
     transform: translateY(-30px);
   }
 
-  #edge {
+  .edge {
     --titleSize: 60px;
     --contentSize: 50px;
     
