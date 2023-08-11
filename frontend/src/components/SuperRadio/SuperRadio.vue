@@ -1,12 +1,5 @@
 <template>
-  <div
-    id="edge"
-    ref="edgeR"
-    :style="{
-      height: basicHeight ? basicHeight + 'px' : 'auto',
-      width: basicWidth ? basicWidth + 'px' : '10000px'
-    }"
-  >
+  <div id="edge" ref="edgeR" :style="edgeStyle">
 
     <div id="title" ref="titleR">
       <div id="titleItem">
@@ -14,7 +7,12 @@
       </div>
     </div>
 
-    <div id="barricade" ref="barricadeR" :style="[absolutifyAndHeight, itemStyle(1)]" :class="{disableTransition: !transition}">
+    <div
+      id="barricade"
+      ref="barricadeR"
+      :style="[ absolutifyAndHeight, itemStyle(1) ]"
+      :class="disableTransition"
+    >
       <div id="barricadeItem"  />
     </div>
     
@@ -24,38 +22,53 @@
         id="itemPadding"
         v-for="(item, index) in props.settings.contents"
         :key="item"
-        :style="[absolutifyAndHeight, itemStyle(index + 2)]"
-        :class="{disableTransition: !transition}"
+        :style="[ absolutifyAndHeight, itemStyle(index + 2) ]"
+        :class="disableTransition"
       >
         <div class="forFlex" :style="getBasicHeight">
           <div
             class="item"
-            :class="[{
-              blackify: !~isSelected(index + 2),  
-              whitify: ~isSelected(index + 2),
-              gapBigger: ~isSelected(index + 2)
-            }]"
+            :class="itemClass(index)"
             :style="bgcOfItem(index + 2)"
             @click="select(index + 2)"
           >
             <div class="itemText">
               {{ item }}
             </div>
-            <img class="x" :class="[{xBigger: ~isSelected(index + 2)}]" src="images/x.svg" alt="x.svg">
+            <img
+              class="x"
+              :class="xClass(index)"
+              src="images/x.svg"
+              alt="x.svg" 
+            />
           </div>
         </div>
         
       </div> 
     </div>
       
-    <div id="allornot" ref="allornot" :style="[absolutifyAndHeight, {width: widths!.at(-1)! + 'px'}]">
+    <div
+      id="allornot"
+      ref="allornot"
+      :style="[absolutifyAndHeight, allornotWidth]"
+    >
       <Transition name="slide-up">
-        <div v-if="switcher" id="allornotItem" @click="selectAll" :style="absolutifyAndHeight">
+        <div
+          v-if="switcher"
+          id="allornotItem"
+          @click="selectAll"
+          :style="absolutifyAndHeight"
+        >
           <div class="forFlex" :style="getBasicHeight">
             모두 선택
           </div>
         </div>
-        <div v-else id="allornotItem" @click="selectAll" :style="absolutifyAndHeight">
+        <div
+          v-else
+          id="allornotItem"
+          @click="selectAll"
+          :style="absolutifyAndHeight"
+        >
           <div class="forFlex" :style="getBasicHeight">
             모두 해제
           </div>
@@ -151,6 +164,39 @@
   const getBasicHeight = computed(() => {
     return {
       height: basicHeight.value + 'px'
+    };
+  });
+
+  const edgeStyle = computed(() => {
+    return {
+      height: basicHeight.value ? basicHeight.value + 'px' : 'auto',
+      width: basicWidth.value ? basicWidth.value + 'px' : '10000px'
+    };
+  });
+
+  const disableTransition = computed(() => {
+    return {
+      disableTransition: !transition.value
+    };
+  });
+
+  const allornotWidth = computed(() => {
+    return {
+      width: widths.value!.at(-1)! + 'px'
+    };
+  });
+
+  const itemClass = computed(() => (index: number) => {
+    return {
+      blackify: !~isSelected(index + 2),  
+      whitify: ~isSelected(index + 2),
+      gapBigger: ~isSelected(index + 2)
+    };
+  });
+
+  const xClass = computed(() => (index: number) => {
+    return {
+      xBigger: ~isSelected(index + 2)
     };
   });
 
