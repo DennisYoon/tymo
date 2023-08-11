@@ -136,9 +136,9 @@ class SuperRadioReceiver {
     this.selectedItems.value = value;
   }
 
-  public watchItems() {
+  public watchContents(prefix: string) {
     watch(this.selectedItems, newItem => {
-      console.log(newItem);
+      console.log(prefix, newItem);
     });
   }
 }

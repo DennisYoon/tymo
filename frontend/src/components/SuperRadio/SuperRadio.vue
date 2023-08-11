@@ -214,6 +214,13 @@
     if (count === 0) {
       switcher.value = true;
     }
+
+    emit(
+      "receiver",
+      order.value
+        .slice(1, indexOfBaricadeAtOrder())
+        .map(v => props.settings.contents[v - 2])
+    );
   }, { deep:true });
 
   /* functions zone */
@@ -278,13 +285,6 @@
         moveElement(order.value, indexAtorder, i);
       }, (modeIsSingle ? (selectedLen ? 1 : 0) : 0) * 300);    
     }
-
-    emit(
-      "receiver",
-      order.value
-        .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.settings.contents[v - 2])
-    );
   }
 
   function selectAll() {
@@ -300,13 +300,6 @@
     } else {
       moveElement(order.value, indexOfBaricadeAtOrder(), order.value.length - 2);
     }
-
-    emit(
-      "receiver",
-      order.value
-        .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.settings.contents[v - 2])
-    );
   }
 
   /* hooks zone */
