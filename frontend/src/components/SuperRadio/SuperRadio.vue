@@ -290,6 +290,7 @@
     edge.setProperty("--titleVerticalMargin", props.settings.styles.titleVerticalMargin + "px");
     edge.setProperty("--contentHorizonMargin", props.settings.styles.contentHorizonMargin + "px");
     edge.setProperty("--contentVerticalMargin", props.settings.styles.contentVerticalMargin + "px");
+    edge.setProperty("--titleWidth", props.settings.styles.titleWidth + "px");
     edge.setProperty("--contentGap", props.settings.styles.contentGap + "px");
 
 
@@ -306,7 +307,10 @@
       order.value.push(i);
     }
 
-    basicHeight.value = Math.max(edgeR.value!.offsetHeight, (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight);
+    basicHeight.value = Math.max(
+      edgeR.value!.offsetHeight,
+      (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight
+    );
     basicWidth.value = sum(widths.value) + 80 * itemParentR.value!.children.length;
 
     /* okay 진행시켜 */
@@ -354,13 +358,14 @@
     --contentHorizonMargin: 80px;
     --contentVerticalMargin: 20px;
 
+    --titleWidth: auto;
     --contentGap: 20px;
 
     font-size: var(--contentSize);
     font-family: 'SUIT';
     // border: 1px solid black;
     border-radius: 20px;
-    display: inline-flex;
+    display: flex;
     user-select: none;
     position: relative;
     color: white;
@@ -371,6 +376,9 @@
       padding-left: calc(var(--titleHorizonMargin) * 2);
       padding-right: var(--titleHorizonMargin);
       font-size: var(--titleSize);
+      text-align: center;
+      justify-content: center;
+      width: var(--titleWidth);
       // border: 1px solid black;
     }
 

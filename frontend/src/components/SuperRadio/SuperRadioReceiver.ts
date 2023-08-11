@@ -13,6 +13,7 @@ interface Settings {
     contentHorizonMargin: number;
     contentVerticalMargin: number;
 
+    titleWidth: number;
     contentGap: number;
   }
 }
@@ -55,6 +56,11 @@ class SuperRadioReceiverBuilder {
     return this;
   }
 
+  setTitleWidth(value: number) {
+    this.srr.SRsettings.styles.titleWidth = value;
+    return this;
+  }
+
   setContentGap(value: number) {
     this.srr.SRsettings.styles.contentGap = value;
     return this;
@@ -80,6 +86,7 @@ class SuperRadioReceiver {
       contentHorizonMargin: 80,
       contentVerticalMargin: 20,
 
+      titleWidth: -1,
       contentGap: 20
     }
   }
