@@ -1,8 +1,7 @@
 <template>
   <SuperRadio
     id="test"
-    title="시험"
-    :contents="srr.items"
+    :settings="srr.settings"
 
     @receiver="srr.receiver"
   />
@@ -10,9 +9,13 @@
 
 <script lang="ts" setup>
   import SuperRadio from "./components/SuperRadio/SuperRadio.vue";
-  import SuperRadioReceiver from "./components/SuperRadio/Receiver";
+  import { SuperRadioReceiverBuilder } from "./components/SuperRadio/SuperRadioReceiver";
 
-  const srr = new SuperRadioReceiver(['대학수학능력시험', '6월 모의평가', '9월 모의평가']);
+  const srr = new SuperRadioReceiverBuilder()
+                .setTitle("시험")
+                .setContents(["대수능", "6월 모평", "9월 모평"])
+                .build();
+
   srr.watchItems();
 </script>
 

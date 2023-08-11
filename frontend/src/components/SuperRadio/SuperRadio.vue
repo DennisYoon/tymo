@@ -10,7 +10,7 @@
 
     <div id="title" ref="titleR">
       <div id="titleItem">
-        {{ props.title }}
+        {{ props.settings.title }}
       </div>
     </div>
 
@@ -22,7 +22,7 @@
     <div id="itemParent" ref="itemParentR">
       <div
         id="itemPadding"
-        v-for="(item, index) in props.contents"
+        v-for="(item, index) in props.settings.contents"
         :key="item"
         :style="[absolutifyAndHeight, itemStyle(index + 2)]"
         :class="{disableTransition: !transition}"
@@ -70,11 +70,11 @@
 <script lang="ts" setup>
   import { ref, computed,  onMounted, StyleValue, watch } from "vue";
   import { sum, moveElement } from "./_functions";
+  import { Settings } from "./SuperRadioReceiver";
 
   interface Props {
     id: string;
-    title: string;
-    contents: string[];
+    settings: Settings;
   }
   type Html = HTMLElement;
 
@@ -157,7 +157,7 @@
   /* watch zone */
   watch(order, newOrder => {
     const count = newOrder.slice(1, indexOfBaricadeAtOrder()).length;
-    if (count === props.contents.length) {
+    if (count === props.settings.contents.length) {
       switcher.value = false;
     }
     if (count === 0) {
@@ -213,7 +213,7 @@
       "receiver",
       order.value
         .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.contents[v - 2])
+        .map(v => props.settings.contents[v - 2])
     );
   }
 
@@ -230,12 +230,23 @@
       "receiver",
       order.value
         .slice(1, indexOfBaricadeAtOrder())
-        .map(v => props.contents[v - 2])
+        .map(v => props.settings.contents[v - 2])
     );
   }
 
   /* hooks zone */
   function mount() {
+    /* css variable 설정 */
+    const edge = edgeR.value!.style;
+    edge.setProperty("--titleSize", props.settings.styles.titleSize + "px");
+    edge.setProperty("--contentSize", props.settings.styles.contentSize + "px");
+    edge.setProperty("--titleHorizonMargin", props.settings.styles.titleHorizonMargin + "px");
+    edge.setProperty("--titleVerticalMargin", props.settings.styles.titleVerticalMargin + "px");
+    edge.setProperty("--contentHorizonMargin", props.settings.styles.contentHorizonMargin + "px");
+    edge.setProperty("--contentVerticalMargin", props.settings.styles.contentVerticalMargin + "px");
+    edge.setProperty("--contentGap", props.settings.styles.contentGap + "px");
+
+
     /* widths에 element 너비 삽입 */
     widths.value.push(getWidth(titleR.value));
     widths.value.push(getWidth(barricadeR.value));
@@ -252,6 +263,7 @@
     basicHeight.value = Math.max(edgeR.value!.offsetHeight, (itemParentR.value!.children[0].children[0].children[0] as Html).offsetHeight);
     basicWidth.value = sum(widths.value) + 80 * itemParentR.value!.children.length;
 
+    /* okay 진행시켜 */
     absolute.value = true;
     setTimeout(() => {
       transition.value = true;
@@ -287,7 +299,18 @@
   }
 
   #edge {
-    font-size: 50px;
+    --titleSize: 60px;
+    --contentSize: 50px;
+    
+    --titleHorizonMargin: 30px;
+    --titleVerticalMargin: 0px;
+
+    --contentHorizonMargin: 80px;
+    --contentVerticalMargin: 20px;
+
+    --contentGap: 20px;
+
+    font-size: var(--contentSize);
     font-family: 'SUIT';
     // border: 1px solid black;
     border-radius: 20px;
@@ -299,9 +322,9 @@
     #title {
       display: flex;
       align-items: center;
-      padding-left: 60px;
-      padding-right: 30px;
-      font-size: 60px;
+      padding-left: calc(var(--titleHorizonMargin) * 2);
+      padding-right: var(--titleHorizonMargin);
+      font-size: var(--titleSize);
       // border: 1px solid black;
     }
 
@@ -310,8 +333,8 @@
       transition: left .5s, opacity .5s;
       transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
       z-index: 3;
-      padding-left: 30px;
-      padding-right: 30px;
+      padding-left: var(--titleHorizonMargin);
+      padding-right: var(--titleHorizonMargin);
       // border: 1px solid black;
       #barricadeItem {  
         border-left: 3px solid white;
@@ -322,8 +345,8 @@
       display: flex;
       #itemPadding {
         // border: 1px solid black;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: var(--contentGap);
+        padding-right: var(--contentGap);
         transition: left .5s;
         .item {
           display: flex;
@@ -331,10 +354,10 @@
           transition: background-color .2s, gap .5s;
           transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
           top: 0;
-          padding-top: 20px;
-          padding-bottom: 20px;
-          padding-left: 40px;
-          padding-right: 40px;
+          padding-top: var(--contentVerticalMargin);
+          padding-bottom: var(--contentVerticalMargin);
+          padding-left: var(--contentHorizonMargin);
+          padding-right: var(--contentHorizonMargin);
           align-items: center;
           gap: 0px;
 
@@ -345,12 +368,12 @@
           }
 
           .xBigger {
-            height: 60px;
+            height: calc(var(--contentSize) * .8);
           }
         }
 
         .gapBigger {
-          gap: 20px;
+          gap: calc(var(--contentSize) * .4);
         }
 
         .blackify {
@@ -377,8 +400,8 @@
 
     #allornot {
       align-items: center;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: var(--contentVerticalMargin);
+      padding-right: var(--contentVerticalMargin);
       right: 0;
       color: rgb(178, 178, 178);
 
